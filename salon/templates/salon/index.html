@@ -1,0 +1,6 @@
+<!-- salon/templates/salon/index.html -->
+{% extends 'salon/base.html' %}
+{% block content %}
+  <h1>Добро пожаловать в наш салон!</h1>
+  <p><a href="{% url 'specialist_list' %}">Посмотреть специалистов</a></p>
+{% endblock %}
