@@ -66,9 +66,28 @@ def user_logout(request):
 # Главная страница
 # ----------------------------------------------------------
 def home(request):
-    # Например, отобразим список всех услуг
     services = Service.objects.all()
-    return render(request, 'salon/home.html', {'services': services})
+
+    # Пример: соберём данные на неделю вперёд (7 дней),
+    # считаем, сколько бронирований на каждый день
+    # Это базовый вариант, доработайте логику по вкусу
+    import datetime
+    today = datetime.date.today()
+    schedule = []
+    for i in range(7):
+        day = today + datetime.timedelta(days=i)
+        count = Booking.objects.filter(date=day).count()
+        # Собираем словари
+        schedule.append({
+            'date': day.strftime('%d-%m-%Y'),
+            'bookings_count': count
+        })
+
+    # Передаём schedule в контекст
+    return render(request, 'salon/home.html', {
+        'services': services,
+        'schedule': schedule,
+    })
 
 
 # ----------------------------------------------------------

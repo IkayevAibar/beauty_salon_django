@@ -3,7 +3,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <title>{% block title %}Салон красоты «Сулу»{% endblock %}</title>
+  <title>{% block title %}Студия Красоты «aLash Studio»{% endblock %}</title>
   <!-- Подключение Tailwind CSS (или Bootstrap — на ваш выбор) -->
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.2.7/dist/tailwind.min.css" rel="stylesheet" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -28,13 +28,17 @@
   <!-- Шапка сайта (header) -->
   <header class="bg-white shadow mb-4">
     <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-      <h1 class="text-xl font-bold text-blue-600">
-        <a href="{% url 'home' %}">Салон «Сулу»</a>
+      <h1 class="text-xl font-bold text-stone-800">
+        <a href="{% url 'home' %}">Студия Красоты «aLash Studio»</a>
       </h1>
 
       <nav class="space-x-4">
         {% if user.is_authenticated %}
-          <a href="{% url 'booking_list' %}" class="text-gray-700 hover:text-blue-600">Мои записи</a>
+          {% if user.is_staff %}
+            <a href="{% url 'booking_list' %}" class="text-gray-700 hover:text-blue-600">Все записи</a>
+          {% else %}
+            <a href="{% url 'booking_list' %}" class="text-gray-700 hover:text-blue-600">Мои записи</a>
+          {% endif %}
           <a href="{% url 'services_list' %}" class="text-gray-700 hover:text-blue-600">Услуги</a>
           {% if user.is_staff or user.specialist_profile %}
             <a href="{% url 'stats' %}" class="text-gray-700 hover:text-blue-600">Статистика</a>
