@@ -1,0 +1,21 @@
+<!-- salon/templates/salon/rating_form.html -->
+{% extends 'salon/base.html' %}
+{% block title %}Оставить отзыв{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto bg-white shadow p-6 rounded">
+  <h2 class="text-xl font-bold mb-4">
+    Отзыв о записи №{{ booking.id }}
+  </h2>
+  <p>Услуга: {{ booking.service.name }}</p>
+  <p>Дата: {{ booking.date }} | Время: {{ booking.time }}</p>
+
+  <form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+      Отправить
+    </button>
+  </form>
+</div>
+{% endblock %}

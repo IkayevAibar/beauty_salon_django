@@ -1,0 +1,35 @@
+<!-- salon/templates/salon/booking_detail.html -->
+{% extends 'salon/base.html' %}
+{% block title %}Детали записи{% endblock %}
+
+{% block content %}
+<div class="bg-white shadow p-6 rounded">
+  <h2 class="text-xl font-bold mb-2">Запись №{{ booking.id }}</h2>
+  <p class="mb-2">
+    <strong>Услуга:</strong> {{ booking.service.name }}<br>
+    <strong>Специалист:</strong> {{ booking.service.specialist.full_name }}<br>
+    <strong>Дата:</strong> {{ booking.date }}<br>
+    <strong>Время:</strong> {{ booking.time }}<br>
+    <strong>Статус:</strong> {{ booking.get_status_display }}
+  </p>
+
+  {% if booking.status == 'finished' or booking.status == 'confirmed' %}
+    {% if booking.rating %}
+      <p class="mt-4 font-semibold">Ваш отзыв:</p>
+      <div class="bg-gray-50 p-3 rounded">
+        <p>Оценка: {{ booking.rating.rating }} / 5</p>
+        <p>Комментарий: {{ booking.rating.comment }}</p>
+      </div>
+      <a href="{% url 'add_rating' booking.id %}" class="block mt-2 text-blue-500 hover:underline">
+        Редактировать отзыв
+      </a>
+    {% else %}
+      <p class="mt-4">
+        <a href="{% url 'add_rating' booking.id %}" class="inline-block px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">
+          Оставить отзыв
+        </a>
+      </p>
+    {% endif %}
+  {% endif %}
+</div>
+{% endblock %}

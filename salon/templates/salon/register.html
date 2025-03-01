@@ -1,0 +1,54 @@
+<!-- salon/templates/salon/register.html -->
+{% extends 'salon/base.html' %}
+{% load static %}  {# если хотите подключать статические файлы #}
+{% block title %}Регистрация{% endblock %}
+
+{% block content %}
+<div class="max-w-lg mx-auto bg-white shadow p-8 rounded">
+  <h2 class="text-2xl font-bold mb-6">Регистрация</h2>
+
+  <form method="POST" novalidate>
+    {% csrf_token %}
+
+    {# Проходимся по каждому полю формы, чтобы задать стили вручную #}
+    <div class="space-y-5">
+      {% for field in form.visible_fields %}
+        <div>
+          <label for="{{ field.id_for_label }}" class="block font-medium text-gray-700 mb-1">
+            {{ field.label }}
+          </label>
+          <div class="">
+            {{ field }}
+          </div>
+          {# Если у поля есть help_text — выведем его мелким шрифтом #}
+          {% if field.help_text %}
+            <p class="text-sm text-gray-500 mt-1">
+              {{ field.help_text }}
+            </p>
+          {% endif %}
+          {# Выводим ошибки поля (если есть) #}
+          {% for error in field.errors %}
+            <p class="text-sm text-red-600 mt-1">
+              {{ error }}
+            </p>
+          {% endfor %}
+        </div>
+      {% endfor %}
+    </div>
+
+    <button
+      type="submit"
+      class="mt-6 bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700"
+    >
+      Зарегистрироваться
+    </button>
+  </form>
+
+  <p class="mt-4">
+    Уже есть аккаунт?
+    <a href="{% url 'login' %}" class="text-blue-500 hover:underline">
+      Войти
+    </a>
+  </p>
+</div>
+{% endblock %}

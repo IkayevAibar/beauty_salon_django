@@ -1,0 +1,15 @@
+<!-- salon/templates/salon/master_stats.html -->
+{% extends 'salon/base.html' %}
+{% block title %}Статистика (Специалист) - Салон «Сулу»{% endblock %}
+
+{% block content %}
+<div class="bg-white shadow p-6 rounded">
+  <h2 class="text-2xl font-bold mb-4">Моя статистика</h2>
+  <ul class="mb-4">
+    <li>Всего записей: {{ total_bookings }}</li>
+    <li>Завершённых: {{ finished_bookings }}</li>
+    <li>Отменённых: {{ canceled_bookings }}</li>
+    <li>Средняя оценка: {{ avg_rating|floatformat:2 }}</li>
+  </ul>
+</div>
+{% endblock %}

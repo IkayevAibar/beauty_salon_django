@@ -1,0 +1,25 @@
+<!-- salon/templates/salon/login.html -->
+{% extends 'salon/base.html' %}
+{% block title %}Вход{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto bg-white shadow p-6 rounded">
+  <h2 class="text-xl font-bold mb-4">Вход в систему</h2>
+  <form method="POST">
+    {% csrf_token %}
+    <div class="mb-4">
+      <label class="block font-semibold mb-1">Имя пользователя</label>
+      <input type="text" name="username" class="border border-gray-300 w-full p-2 rounded" required>
+    </div>
+    <div class="mb-4">
+      <label class="block font-semibold mb-1">Пароль</label>
+      <input type="password" name="password" class="border border-gray-300 w-full p-2 rounded" required>
+    </div>
+    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Войти</button>
+  </form>
+  <p class="mt-4">
+    Нет аккаунта?
+    <a href="{% url 'register' %}" class="text-blue-500 hover:underline">Зарегистрироваться</a>
+  </p>
+</div>
+{% endblock %}

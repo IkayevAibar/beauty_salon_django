@@ -13,20 +13,17 @@ class Specialist(models.Model):
     )
     full_name = models.CharField(max_length=100)
     experience_years = models.PositiveIntegerField()
-    services = models.TextField(help_text="Перечислите услуги через запятую или опишите более детально.")
     bio = models.TextField(blank=True)
     
     def __str__(self):
         return self.full_name
 
 
-class Salon(models.Model):
-    """
-    Модель салона красоты (если предполагается несколько салонов).
-    """
-    name = models.CharField(max_length=200)
-    address = models.CharField(max_length=255)
+class Service(models.Model):
+    name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
+    price = models.DecimalField(max_digits=8, decimal_places=2)
+    specialist = models.ForeignKey(Specialist, on_delete=models.CASCADE, related_name='services')
 
     def __str__(self):
         return self.name
@@ -34,7 +31,7 @@ class Salon(models.Model):
 
 class Booking(models.Model):
     """
-    Бронирование: пользователь записался к специалисту в определенный день и время.
+    Бронирование: пользователь записался на услугу в определенный день и время.
     """
     STATUS_CHOICES = (
         ('pending', 'Ожидает подтверждения'),
@@ -43,8 +40,7 @@ class Booking(models.Model):
         ('finished', 'Завершено'),
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='bookings')
-    specialist = models.ForeignKey(Specialist, on_delete=models.CASCADE, related_name='bookings')
-    salon = models.ForeignKey(Salon, on_delete=models.SET_NULL, null=True, blank=True)
+    service = models.ForeignKey(Service, on_delete=models.CASCADE, related_name='bookings')
     
     # Дата и время, когда клиент хочет прийти
     date = models.DateField()

@@ -1,0 +1,31 @@
+<!-- salon/templates/salon/service_detail.html -->
+{% extends 'salon/base.html' %}
+{% block title %}Услуга{% endblock %}
+
+{% block content %}
+<div class="bg-white shadow p-6 rounded">
+  <h2 class="text-2xl font-bold mb-2">{{ service.name }}</h2>
+  <p class="text-gray-700 mb-2">{{ service.description }}</p>
+  <p class="text-blue-700 font-semibold mb-4">{{ service.price }} KZT</p>
+
+  {% if user.is_authenticated %}
+    {% if is_already_booked %}
+      <p class="text-green-600 font-semibold">
+        Вы уже записаны на эту услугу (ожидается или подтверждено)!
+      </p>
+    {% else %}
+        {% if user.is_authenticated and not user.is_staff and not user.specialist_profile %}
+            <a href="{% url 'booking_create' service.id %}"
+                class="inline-block px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+                Записаться
+            </a>
+        {% endif %}
+    {% endif %}
+  {% else %}
+    <p class="text-sm text-gray-600">
+      Чтобы записаться, <a href="{% url 'login' %}" class="text-blue-500 hover:underline">авторизуйтесь</a>.
+    </p>
+  {% endif %}
+</div>
+{% endblock %}

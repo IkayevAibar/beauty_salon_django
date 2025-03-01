@@ -1,0 +1,24 @@
+<!-- salon/templates/salon/booking_edit.html -->
+{% extends 'salon/base.html' %}
+{% block title %}Изменение записи{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto bg-white shadow p-6 rounded">
+  <h2 class="text-xl font-bold mb-4">Изменить бронирование</h2>
+
+  <!-- Показываем неподвежную услугу (только для информации) -->
+  <p class="mb-4">
+    <strong>Услуга: </strong> {{ booking.service.name }}
+  </p>
+
+  <form method="POST">
+    {% csrf_token %}
+    <!-- Выводим только поля date и time -->
+    {{ form.as_p }}
+
+    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 mt-4">
+      Сохранить
+    </button>
+  </form>
+</div>
+{% endblock %}
