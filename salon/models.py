@@ -4,6 +4,16 @@ from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
 
 class Specialist(models.Model):
+    """
+    Модель Specialist представляет специалиста в салоне красоты.
+    Атрибуты:
+        user (OneToOneField): Связь один-к-одному с моделью User, представляющая пользователя, связанного с этим специалистом.
+        full_name (CharField): Полное имя специалиста, ограниченное 100 символами.
+        experience_years (PositiveIntegerField): Количество лет опыта работы специалиста.
+        bio (TextField): Биография специалиста, может быть пустой.
+    Методы:
+        __str__(): Возвращает строковое представление полного имени специалиста.
+    """
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
@@ -20,6 +30,16 @@ class Specialist(models.Model):
 
 
 class Service(models.Model):
+    """
+    Модель, представляющая услугу в салоне красоты.
+    Атрибуты:
+        name (CharField): Название услуги, ограниченное 100 символами.
+        description (TextField): Описание услуги, может быть пустым.
+        price (DecimalField): Цена услуги с максимальной длиной 8 цифр и 2 десятичными знаками.
+        specialist (ForeignKey): Ссылка на специалиста, предоставляющего услугу, с каскадным удалением и обратной связью 'services'.
+    Методы:
+        __str__(): Возвращает строковое представление услуги (название).
+    """
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
     price = models.DecimalField(max_digits=8, decimal_places=2)
@@ -32,6 +52,16 @@ class Service(models.Model):
 class Booking(models.Model):
     """
     Бронирование: пользователь записался на услугу в определенный день и время.
+
+    Атрибуты:
+        user (ForeignKey): Пользователь, который сделал бронирование.
+        service (ForeignKey): Услуга, на которую записался пользователь.
+        date (DateField): Дата, когда клиент хочет прийти.
+        time (TimeField): Время, когда клиент хочет прийти.
+        status (CharField): Статус бронирования (ожидает подтверждения, подтверждено, отменено, завершено).
+        created_at (DateTimeField): Дата и время создания бронирования.
+    Методы:
+        __str__: Возвращает строковое представление бронирования.
     """
     STATUS_CHOICES = (
         ('pending', 'Ожидает подтверждения'),
