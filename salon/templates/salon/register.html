@@ -1,6 +1,4 @@
-<!-- salon/templates/salon/register.html -->
 {% extends 'salon/base.html' %}
-{% load static %}
 {% block title %}Регистрация{% endblock %}
 
 {% block content %}
@@ -10,76 +8,101 @@
   <form method="POST" novalidate>
     {% csrf_token %}
 
-    <div class="space-y-5">
-      {% for field in form.visible_fields %}
-        <div>
-          <label for="{{ field.id_for_label }}" class="block font-medium text-gray-700 mb-1">
-            {{ field.label }}
-          </label>
-          {% if field.help_text %}
-            <div class="text-sm text-gray-500 mt-1 help-text">
-              {{ field.help_text }}
-            </div>
-          {% endif %}
-          <div class="">
-            {{ field }}
-          </div>
-          {% for error in field.errors %}
-            <p class="text-sm text-red-600 mt-1">
-              {{ error }}
-            </p>
-          {% endfor %}
+    <div class="space-y-6">
+      <!-- Имя пользователя -->
+      <div>
+        <label for="id_username" class="block font-medium text-gray-700 mb-1">Имя пользователя</label>
+        <div id="tip-username" class="help-text text-sm text-gray-500 mt-1">
+          Обязательное поле. Не более 150 символов. Только буквы, цифры и символы @/./+/-/_.
         </div>
-      {% endfor %}
+        <input type="text" name="username" id="id_username"
+               value="{{ form.username.value|default:'' }}"
+               class="border border-gray-300 w-full p-2 rounded"
+               required onfocus="showTip('username')" onblur="hideTip('username')">
+        {% for error in form.username.errors %}
+          <p class="text-sm text-red-600 mt-1">{{ error }}</p>
+        {% endfor %}
+      </div>
+
+      <!-- Email -->
+      <div>
+        <label for="id_email" class="block font-medium text-gray-700 mb-1">Email</label>
+        <input type="email" name="email" id="id_email"
+               value="{{ form.email.value|default:'' }}"
+               class="border border-gray-300 w-full p-2 rounded"
+               required>
+        {% for error in form.email.errors %}
+          <p class="text-sm text-red-600 mt-1">{{ error }}</p>
+        {% endfor %}
+      </div>
+
+      <!-- Пароль -->
+      <div>
+        <label for="id_password1" class="block font-medium text-gray-700 mb-1">Пароль</label>
+        <div id="tip-password" class="help-text text-sm text-gray-500 mt-1">
+          <ul class="list-disc pl-4 space-y-1">
+            <li>Пароль не должен быть слишком похож на другую вашу личную информацию.</li>
+            <li>Ваш пароль должен содержать как минимум 8 символов.</li>
+            <li>Пароль не должен быть слишком простым и распространённым.</li>
+            <li>Пароль не может состоять только из цифр.</li>
+          </ul>
+        </div>
+        <input type="password" name="password1" id="id_password1"
+               class="border border-gray-300 w-full p-2 rounded"
+               required onfocus="showTip('password')" onblur="hideTip('password')">
+        {% for error in form.password1.errors %}
+          <p class="text-sm text-red-600 mt-1">{{ error }}</p>
+        {% endfor %}
+      </div>
+
+      <!-- Подтверждение пароля -->
+      <div>
+        <label for="id_password2" class="block font-medium text-gray-700 mb-1">Подтверждение пароля</label>
+        <input type="password" name="password2" id="id_password2"
+               class="border border-gray-300 w-full p-2 rounded"
+               required>
+        {% for error in form.password2.errors %}
+          <p class="text-sm text-red-600 mt-1">{{ error }}</p>
+        {% endfor %}
+      </div>
     </div>
 
-    <button
-      type="submit"
-      class="mt-6 bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700"
-    >
+    <button type="submit"
+            class="mt-6 bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">
       Зарегистрироваться
     </button>
   </form>
 
   <p class="mt-4">
     Уже есть аккаунт?
-    <a href="{% url 'login' %}" class="text-blue-500 hover:underline">
-      Войти
-    </a>
+    <a href="{% url 'login' %}" class="text-blue-500 hover:underline">Войти</a>
   </p>
 </div>
 
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
-  const fields = document.querySelectorAll("input, select, textarea");
+  function showTip(type) {
+    const el = document.getElementById("tip-" + type);
+    if (el) el.classList.add("visible");
+  }
 
-  fields.forEach((field) => {
-    const helpText = field.closest("div").parentElement.querySelector(".help-text");
-    if (!helpText) return;
-
-    field.addEventListener("focus", () => {
-      helpText.classList.add("active");
-    });
-
-    field.addEventListener("blur", () => {
-      helpText.classList.remove("active");
-    });
-  });
-});
-
-
-
+  function hideTip(type) {
+    const el = document.getElementById("tip-" + type);
+    if (el) el.classList.remove("visible");
+  }
 </script>
+
+
 <style>
   .help-text {
     opacity: 0;
     max-height: 0;
     overflow: hidden;
-    transition: opacity 0.3s ease, max-height 0.3s ease;
+    transition: opacity 0.5s ease, max-height 0.5s ease;
   }
-  .help-text.active {
+
+  .help-text.visible {
     opacity: 1;
-    max-height: 200px; 
+    max-height: 300px;
   }
 </style>
 

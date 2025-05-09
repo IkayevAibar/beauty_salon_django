@@ -1,0 +1,45 @@
+<!-- templates/salon/partials/header.html -->
+<header class="flex flex-wrap lg:justify-start lg:flex-nowrap z-50 w-full py-7">
+    <nav class="relative max-w-7xl w-full flex flex-wrap lg:grid lg:grid-cols-12 basis-full items-center px-4 md:px-6 lg:px-8 mx-auto">
+      <div class="lg:col-span-3 flex items-center">
+        <a class="flex-none text-xl font-semibold" href="{% url 'home' %}">
+          <!-- Можно вставить SVG логотип или текст -->
+          aLash Studio
+        </a>
+      </div>
+  
+      <div class="flex items-center gap-x-1 lg:gap-x-2 ms-auto py-1 lg:ps-6 lg:order-3 lg:col-span-3">
+        
+        {% if user.is_authenticated %}
+          <a href="{% url 'booking_list' %}" class="py-2 px-3 inline-flex items-center text-sm font-medium rounded-xl bg-white border text-black hover:bg-gray-100">Записи</a>
+          <a href="{% url 'services_list' %}" class="py-2 px-3 inline-flex items-center text-sm font-medium rounded-xl bg-white border text-black hover:bg-gray-100">Услуги</a>
+          {% if user.is_staff or user.specialist_profile %}
+            <a href="{% url 'stats' %}" class="py-2 px-3 inline-flex items-center text-sm font-medium rounded-xl bg-white border text-black hover:bg-gray-100">Статистика</a>
+          {% endif %}
+          <div class="py-2 px-3 inline-flex items-center text-sm font-medium rounded-xl bg-lime-400 text-black hover:bg-lime-500">
+            {{ user.username }}
+          </div>
+          <a href="{% url 'logout' %}" class="text-red-500 hover:text-red-600">Выйти</a>
+        {% else %}
+          <a href="{% url 'login' %}" class="py-2 px-3 inline-flex items-center text-sm font-medium rounded-xl bg-white border text-black hover:bg-gray-100">
+            Войти
+          </a>
+          <a href="{% url 'register' %}" class="py-2 px-3 inline-flex items-center text-sm font-medium rounded-xl bg-lime-400 text-black hover:bg-lime-500">
+            Записаться
+          </a>
+        {% endif %}
+        
+      </div>
+  
+      <div class="hs-collapse hidden lg:block lg:col-span-6" id="main-navbar">
+        <div class="flex flex-col lg:flex-row lg:justify-center gap-4 mt-5 lg:mt-0">
+          <a href="{% url 'home' %}#services" class="text-black hover:text-gray-600 dark:text-white dark:hover:text-neutral-300">Услуги</a>
+          {% if user.is_authenticated and schedule %}
+          <a href="{% url 'home' %}#schedule" class="text-black hover:text-gray-600 dark:text-white dark:hover:text-neutral-300">График</a>
+          {% endif %}
+          <a href="{% url 'home' %}#contacts" class="text-black hover:text-gray-600 dark:text-white dark:hover:text-neutral-300">Контакты</a>
+        </div>
+      </div>
+    </nav>
+  </header>
+  

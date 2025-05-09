@@ -1,84 +1,53 @@
 <!-- salon/templates/salon/base.html -->
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8" />
-  <title>{% block title %}Студия Красоты «aLash Studio»{% endblock %}</title>
-  <!-- Подключение Tailwind CSS (или Bootstrap — на ваш выбор) -->
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.2.7/dist/tailwind.min.css" rel="stylesheet" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-    <style type="text/tailwindcss">
-      @theme {
-        --color-clifford:rgb(133, 133, 133);
-      }
-      input[type="submit"] {
-        background-color: var(--color-clifford);
-      }
-      input {
-        border: 1px solid var(--color-clifford);
-        border-color: gray-300;
-        border-radius: 0.375rem; /* rounded */
-        padding: 0.5rem 0.75rem; /* px-3 py-2 */
-        width: 100%; /* w-full */
-      }
-    </style>
+  <meta charset="utf-8">
+  <title>{% block title %}Салон красоты «Сулу»{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Preline + Tailwind CSS -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://preline.co/assets/css/main.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/preline/dist/index.js"></script>
+
+  <!-- Theme script -->
+  <script>
+    const html = document.documentElement;
+    const theme = localStorage.getItem('hs_theme');
+    if (theme === 'dark' || (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      html.classList.add('dark');
+    } else {
+      html.classList.remove('dark');
+    }
+  </script>
 </head>
-<body class="bg-gray-100 min-h-screen flex flex-col">
-  <!-- Шапка сайта (header) -->
-  <header class="bg-white shadow mb-4">
-    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-      <h1 class="text-xl font-bold text-stone-800">
-        <a href="{% url 'home' %}">Студия Красоты «aLash Studio»</a>
-      </h1>
 
-      <nav class="space-x-4">
-        {% if user.is_authenticated %}
-          {% if user.is_staff %}
-            <a href="{% url 'booking_list' %}" class="text-gray-700 hover:text-blue-600">Все записи</a>
-          {% else %}
-            <a href="{% url 'booking_list' %}" class="text-gray-700 hover:text-blue-600">Мои записи</a>
-          {% endif %}
-          <a href="{% url 'services_list' %}" class="text-gray-700 hover:text-blue-600">Услуги</a>
-          {% if user.is_staff or user.specialist_profile %}
-            <a href="{% url 'stats' %}" class="text-gray-700 hover:text-blue-600">Статистика</a>
-          {% endif %}
-          <div class="inline-block text-gray-700 text-aqua-600">
-            {{ user.username }}
-          </div>
-          <a href="{% url 'logout' %}" class="text-red-500 hover:text-red-600">Выйти</a>
-        {% else %}
-          <a href="{% url 'login' %}" class="text-gray-700 hover:text-blue-600">Войти</a>
-          <a href="{% url 'register' %}" class="text-gray-700 hover:text-blue-600">Регистрация</a>
-          <a href="{% url 'services_list' %}" class="text-gray-700 hover:text-blue-600">Услуги</a>
-        {% endif %}
-      </nav>
-    </div>
-  </header>
+<body class="bg-white text-black dark:bg-neutral-900 dark:text-white flex flex-col min-h-screen">
 
-  <!-- Вывод сообщений Django (messages) -->
-  <div class="container mx-auto px-4">
+  <!-- Header -->
+  {% include 'partials/header.html' %}
+
+  <!-- Messages -->
+  <div class="container mx-auto mt-4 px-4">
     {% if messages %}
-      <ul>
+      <div class="space-y-2">
         {% for message in messages %}
-          <li class="my-2 py-2 px-4 border-l-4 {% if message.tags == 'error' %}border-red-600 bg-red-50{% else %}border-blue-600 bg-blue-50{% endif %}">
+          <div class="p-3 rounded-lg {% if message.tags == 'error' %}bg-red-100 text-red-800{% else %}bg-green-100 text-green-800{% endif %}">
             {{ message }}
-          </li>
+          </div>
         {% endfor %}
-      </ul>
+      </div>
     {% endif %}
   </div>
 
-  <!-- Основной контент -->
-  <main class="container mx-auto px-4 flex-grow">
+  <!-- Main Content -->
+  <main class="flex-grow">
     {% block content %}{% endblock %}
   </main>
 
-  <!-- Подвал сайта -->
-  <footer class="bg-gray-800 text-gray-100 py-4 mt-4">
-    <div class="container mx-auto px-4 text-center">
-      © 2025 Салон красоты «Сулу»
-    </div>
-  </footer>
+  <!-- Footer -->
+  {% include 'partials/footer.html' %}
+
 </body>
 </html>

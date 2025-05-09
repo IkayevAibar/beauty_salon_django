@@ -15,6 +15,7 @@ from .forms import (
     RatingForm,
 )
 
+from datetime import date, timedelta
 # ----------------------------------------------------------
 # Вспомогательные проверки / декораторы
 # ----------------------------------------------------------
@@ -352,45 +353,55 @@ def add_rating(request, booking_id):
 
 @login_required
 def stats_view(request):
-    # пример простой статистики
+    today = date.today()
+    schedule = []
+    for i in range(7):
+        day = today + timedelta(days=i)
+        if request.user.is_staff:
+            count = Booking.objects.filter(date=day).count()
+        elif is_specialist(request.user):
+            specialist = request.user.specialist_profile
+            count = Booking.objects.filter(date=day, service__specialist=specialist).count()
+        else:
+            count = 0
+        schedule.append({
+            'date': day.strftime('%d-%m-%Y'),
+            'bookings_count': count
+        })
+
     if request.user.is_staff:
-        # глобальная статистика
         total_bookings = Booking.objects.count()
         finished_bookings = Booking.objects.filter(status='finished').count()
         canceled_bookings = Booking.objects.filter(status='canceled').count()
-        # средняя оценка
         all_ratings = Rating.objects.all()
-        if all_ratings:
-            avg_rating = sum(r.rating for r in all_ratings) / all_ratings.count()
-        else:
-            avg_rating = 0
+        avg_rating = sum(r.rating for r in all_ratings) / all_ratings.count() if all_ratings else 0
 
         context = {
             'total_bookings': total_bookings,
             'finished_bookings': finished_bookings,
             'canceled_bookings': canceled_bookings,
             'avg_rating': avg_rating,
+            'schedule': schedule,
         }
         return render(request, 'salon/admin_stats.html', context)
+
     elif is_specialist(request.user):
-        # статистика только по услугам данного специалиста
         specialist = request.user.specialist_profile
         my_bookings = Booking.objects.filter(service__specialist=specialist)
         total_bookings = my_bookings.count()
         finished_bookings = my_bookings.filter(status='finished').count()
         canceled_bookings = my_bookings.filter(status='canceled').count()
         all_ratings = Rating.objects.filter(booking__service__specialist=specialist)
-        if all_ratings:
-            avg_rating = sum(r.rating for r in all_ratings) / all_ratings.count()
-        else:
-            avg_rating = 0
+        avg_rating = sum(r.rating for r in all_ratings) / all_ratings.count() if all_ratings else 0
+
         context = {
             'total_bookings': total_bookings,
             'finished_bookings': finished_bookings,
             'canceled_bookings': canceled_bookings,
             'avg_rating': avg_rating,
+            'schedule': schedule,
         }
         return render(request, 'salon/master_stats.html', context)
-    else:
-        messages.error(request, "У вас нет доступа к статистике.")
-        return redirect('home')
+
+    messages.error(request, "У вас нет доступа к статистике.")
+    return redirect('home')
