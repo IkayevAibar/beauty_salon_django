@@ -16,6 +16,7 @@ from .forms import (
 )
 
 from datetime import date, timedelta
+from django.db.models import Avg, Count
 # ----------------------------------------------------------
 # Вспомогательные проверки / декораторы
 # ----------------------------------------------------------
@@ -137,19 +138,25 @@ def service_delete(request, service_id):
 
 def services_list(request):
     # Доступно для всех (просто просмотр)
-    services = Service.objects.select_related('specialist').all()
+    services = Service.objects.annotate(
+        average_rating=Avg('bookings__rating__rating'),
+        ratings_count=Count('bookings__rating')
+    )
     return render(request, 'salon/services_list.html', {'services': services})
 
 
 def service_detail(request, service_id):
     # Детальная страница услуги
-    from django.shortcuts import get_object_or_404
-    from .models import Service, Booking
     
-    service = get_object_or_404(Service, id=service_id)
+    service = get_object_or_404(Service.objects.annotate(
+        average_rating=Avg('bookings__rating__rating'),
+        ratings_count=Count('bookings__rating'),
+    ), id=service_id)
 
     # По умолчанию считаем, что пользователь не записан
     is_already_booked = False
+
+    ratings = Rating.objects.filter(booking__service=service).select_related('booking__user')
 
     if request.user.is_authenticated:
         # Ищем бронирования этого пользователя для текущей услуги
@@ -164,6 +171,7 @@ def service_detail(request, service_id):
 
     return render(request, 'salon/service_detail.html', {
         'service': service,
+        'ratings': ratings,
         'is_already_booked': is_already_booked
     })
 

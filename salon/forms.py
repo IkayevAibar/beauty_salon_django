@@ -71,6 +71,24 @@ class BookingEditForm(forms.ModelForm):
 
 
 class RatingForm(forms.ModelForm):
+    rating = forms.IntegerField(
+        label='Оценка',
+        min_value=1,
+        max_value=5,
+        widget=forms.NumberInput(attrs={
+            'class': 'w-full border border-gray-300 rounded px-3 py-2',
+            'placeholder': 'Оценка от 1 до 5'
+        })
+    )
+    comment = forms.CharField(
+        label='Комментарий',
+        widget=forms.Textarea(attrs={
+            'class': 'w-full border border-gray-300 rounded px-3 py-2',
+            'rows': 4,
+            'placeholder': 'Оставьте ваш отзыв...'
+        }),
+        required=False
+    )
     class Meta:
         model = Rating
         fields = ["rating", "comment"]

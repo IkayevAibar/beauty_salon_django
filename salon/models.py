@@ -28,6 +28,12 @@ class Specialist(models.Model):
     def __str__(self):
         return self.full_name
 
+    class Meta:
+        verbose_name = "Специалист"
+        verbose_name_plural = "Специалисты"
+        ordering = ['full_name']
+        unique_together = ('user', 'full_name')
+
 
 class Service(models.Model):
     """
@@ -48,6 +54,12 @@ class Service(models.Model):
 
     def __str__(self):
         return self.name
+    
+    class Meta:
+        verbose_name = "Услуга"
+        verbose_name_plural = "Услуги"
+        ordering = ['name']
+        unique_together = ('name', 'specialist')
 
 
 class Booking(models.Model):
@@ -81,7 +93,13 @@ class Booking(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.user.username} -> {self.specialist.full_name} on {self.date} at {self.time}"
+        return f"{self.user.username} -> {self.service.name}({self.service.specialist.full_name}) на {self.date} в {self.time}"
+    
+    class Meta:
+        verbose_name = "Запись"
+        verbose_name_plural = "Записи"
+        ordering = ['-created_at']
+        unique_together = ('user', 'service', 'date', 'time')
 
 
 class Rating(models.Model):
@@ -94,3 +112,8 @@ class Rating(models.Model):
 
     def __str__(self):
         return f"Rating {self.rating} for {self.booking}"
+    
+    class Meta:
+        verbose_name = "Оценка"
+        verbose_name_plural = "Оценки"
+        ordering = ['-booking__created_at']
