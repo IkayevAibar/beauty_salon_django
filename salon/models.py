@@ -29,7 +29,10 @@ class Specialist(models.Model):
 
     @property
     def average_rating(self):
-        return Rating.objects.filter(booking__service__specialist=self).aggregate(avg=Avg('rating'))['avg']
+        avg = Rating.objects.filter(booking__service__specialist=self).aggregate(
+            avg=Avg('rating')
+        )['avg']
+        return avg or 0
     
     @property
     def reviews(self):

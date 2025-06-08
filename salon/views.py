@@ -151,7 +151,12 @@ def service_detail(request, service_id):
     service = get_object_or_404(Service.objects.annotate(
         average_rating=Avg('bookings__rating__rating'),
         ratings_count=Count('bookings__rating'),
-    ), id=service_id)
+    ).select_related('specialist'),  # Добавьте эту строку
+        id=service_id
+    )
+
+    # Получаем другие услуги специалиста (исключая текущую)
+    other_services = service.specialist.services.exclude(id=service.id)[:4]
 
     # По умолчанию считаем, что пользователь не записан
     is_already_booked = False
@@ -172,7 +177,8 @@ def service_detail(request, service_id):
     return render(request, 'salon/service_detail.html', {
         'service': service,
         'ratings': ratings,
-        'is_already_booked': is_already_booked
+        'is_already_booked': is_already_booked,
+        'other_services': other_services
     })
 
 

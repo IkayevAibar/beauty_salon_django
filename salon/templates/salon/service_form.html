@@ -5,67 +5,165 @@
 {% endblock %}
 
 {% block content %}
-<div class="max-w-lg mx-auto bg-white shadow p-8 rounded mt-10">
-    <h2 class="text-2xl font-bold mb-6">
-        {% if service %}Изменить услугу{% else %}Добавить услугу{% endif %}
-    </h2>
+<div class="max-w-2xl mx-auto bg-white shadow-lg rounded-xl mt-10 overflow-hidden">
+    <div class="bg-indigo-50 px-8 py-6 border-b">
+        <h2 class="text-2xl font-bold text-gray-800">
+            {% if service %}Изменить услугу{% else %}Добавить услугу{% endif %}
+        </h2>
+    </div>
 
-    <form method="POST" enctype="multipart/form-data" class="space-y-5">
+    <form method="POST" enctype="multipart/form-data" class="px-8 py-6">
         {% csrf_token %}
+        
+        <!-- Основная информация -->
+        <div class="mb-8">
+            <h3 class="text-lg font-semibold text-gray-700 mb-4 pb-2 border-b">Основная информация</h3>
+            <div class="space-y-5">
+                <div>
+                    <label for="id_name" class="block text-sm font-medium text-gray-700 mb-1">Название</label>
+                    {{ form.name }}
+                    {% if form.name.errors %}
+                        <p class="text-red-600 text-xs mt-1">{{ form.name.errors }}</p>
+                    {% endif %}
+                </div>
 
-        <div>
-            <label for="id_name" class="block text-sm font-medium text-gray-700">Название</label>
-            {{ form.name }}
-            {% if form.name.errors %}
-                <p class="text-red-600 text-sm">{{ form.name.errors }}</p>
-            {% endif %}
+                <div>
+                    <label for="id_description" class="block text-sm font-medium text-gray-700 mb-1">Описание</label>
+                    {{ form.description }}
+                    {% if form.description.errors %}
+                        <p class="text-red-600 text-xs mt-1">{{ form.description.errors }}</p>
+                    {% endif %}
+                </div>
+            </div>
         </div>
 
-        <div>
-            <label for="id_description" class="block text-sm font-medium text-gray-700">Описание</label>
-            {{ form.description }}
-            {% if form.description.errors %}
-                <p class="text-red-600 text-sm">{{ form.description.errors }}</p>
-            {% endif %}
+        <!-- Детали услуги -->
+        <div class="mb-8">
+            <h3 class="text-lg font-semibold text-gray-700 mb-4 pb-2 border-b">Детали услуги</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="id_price" class="block text-sm font-medium text-gray-700 mb-1">Цена (₸)</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">₸</span>
+                        {{ form.price }}
+                    </div>
+                    {% if form.price.errors %}
+                        <p class="text-red-600 text-xs mt-1">{{ form.price.errors }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="id_duration_minutes" class="block text-sm font-medium text-gray-700 mb-1">Длительность (мин)</label>
+                    {{ form.duration_minutes }}
+                    {% if form.duration_minutes.errors %}
+                        <p class="text-red-600 text-xs mt-1">{{ form.duration_minutes.errors }}</p>
+                    {% endif %}
+                </div>
+            </div>
         </div>
 
-        <div>
-            <label for="id_price" class="block text-sm font-medium text-gray-700">Цена</label>
-            {{ form.price }}
-            {% if form.price.errors %}
-                <p class="text-red-600 text-sm">{{ form.price.errors }}</p>
-            {% endif %}
-        </div>
-
-        <div>
-            <label for="id_duration_minutes" class="block text-sm font-medium text-gray-700">Длительность (мин)</label>
-            {{ form.duration_minutes }}
-            {% if form.duration_minutes.errors %}
-                <p class="text-red-600 text-sm">{{ form.duration_minutes.errors }}</p>
-            {% endif %}
-        </div>
-
-        <div>
-            <label for="id_details" class="block text-sm font-medium text-gray-700">Что входит в услугу</label>
+        <!-- Что входит в услугу -->
+        <div class="mb-8">
+            <label for="id_details" class="block text-sm font-medium text-gray-700 mb-1">Что входит в услугу</label>
             {{ form.details }}
+            <p class="text-xs text-gray-500 mt-1">Перечислите элементы услуги через запятую</p>
             {% if form.details.errors %}
-                <p class="text-red-600 text-sm">{{ form.details.errors }}</p>
+                <p class="text-red-600 text-xs mt-1">{{ form.details.errors }}</p>
             {% endif %}
         </div>
 
-        <div>
-            <label for="id_photo" class="block text-sm font-medium text-gray-700">Фото</label>
-            {{ form.photo }}
-            {% if form.photo.errors %}
-                <p class="text-red-600 text-sm">{{ form.photo.errors }}</p>
+        <!-- Фото услуги -->
+        <div class="mb-8">
+            <h3 class="text-lg font-semibold text-gray-700 mb-4 pb-2 border-b">Изображение</h3>
+            
+            {% if form.instance.photo %}
+            <div class="mb-4 p-4 bg-gray-50 rounded-lg">
+                <p class="text-sm font-medium text-gray-700 mb-2">Текущее изображение:</p>
+                <div class="flex items-start space-x-4">
+                    <img src="{{ form.instance.photo.url }}" alt="Изображение услуги" class="w-32 h-32 object-cover rounded-lg border">
+                    <div class="flex-1">
+                        <p class="text-sm text-gray-600 mb-2">{{ form.instance.photo.name }}</p>
+                        <div class="flex items-center">
+                            <input type="checkbox" name="photo-clear" id="photo-clear_id" class="mr-2">
+                            <label for="photo-clear_id" class="text-sm text-gray-700">Удалить изображение</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
             {% endif %}
+
+            <div>
+                <label for="id_photo" class="block text-sm font-medium text-gray-700 mb-1">
+                    {% if form.instance.photo %}Заменить изображение{% else %}Добавить изображение{% endif %}
+                </label>
+                <div class="mt-1 flex items-center">
+                    <label class="flex flex-col items-center justify-center px-4 py-6 bg-white text-blue-600 rounded-lg border-2 border-dashed border-blue-300 cursor-pointer hover:bg-blue-50 transition-colors duration-200 w-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                        </svg>
+                        <span class="mt-2 text-sm font-medium">Выберите файл</span>
+                        <span class="text-xs text-gray-500 mt-1">PNG, JPG (макс. 5MB)</span>
+                        {{ form.photo }}
+                    </label>
+                </div>
+                {% if form.photo.errors %}
+                    <p class="text-red-600 text-xs mt-1">{{ form.photo.errors }}</p>
+                {% endif %}
+            </div>
         </div>
 
-        <div class="mt-6">
-            <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
+        <!-- Кнопка сохранения -->
+        <div class="mt-8 pt-6 border-t border-gray-200">
+            <button type="submit" class="w-full bg-gradient-to-r from-red-100 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-black py-3 px-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 font-medium">
                 {% if service %}Сохранить изменения{% else %}Создать услугу{% endif %}
             </button>
         </div>
     </form>
 </div>
+
+<style>
+    input[type="file"] {
+        display: none;
+    }
+    
+    .error-border {
+        border-color: #e53e3e;
+    }
+    
+    input:focus, textarea:focus, select:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.3);
+        border-color: rgba(99, 102, 241, 0.6);
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Добавляем обработчики ошибок для стилизации полей
+        const fields = document.querySelectorAll('input, textarea, select');
+        fields.forEach(field => {
+            if (field.classList.contains('error-border')) {
+                field.classList.add('border-red-300');
+            }
+            
+            field.addEventListener('change', function() {
+                if (this.classList.contains('error-border')) {
+                    this.classList.remove('error-border', 'border-red-300');
+                }
+            });
+        });
+        
+        // Отображаем имя файла при выборе
+        const fileInput = document.querySelector('input[type="file"]');
+        if (fileInput) {
+            fileInput.addEventListener('change', function() {
+                if (this.files.length > 0) {
+                    const fileName = this.files[0].name;
+                    const label = this.closest('label');
+                    label.querySelector('span:last-child').textContent = fileName;
+                }
+            });
+        }
+    });
+</script>
 {% endblock %}
