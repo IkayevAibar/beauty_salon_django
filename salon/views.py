@@ -68,7 +68,7 @@ def user_logout(request):
 # Главная страница
 # ----------------------------------------------------------
 def home(request):
-    services = Service.objects.all()
+    services = Service.objects.all()[:4]
 
     # Пример: соберём данные на неделю вперёд (7 дней),
     # считаем, сколько бронирований на каждый день
@@ -413,3 +413,11 @@ def stats_view(request):
 
     messages.error(request, "У вас нет доступа к статистике.")
     return redirect('home')
+
+# ----------------------------------------------------------
+# Специалисты (Specialist)
+# ----------------------------------------------------------
+
+def specialist_detail(request, pk):
+    specialist = get_object_or_404(Specialist, pk=pk)
+    return render(request, 'salon/specialist_detail.html', {'specialist': specialist})

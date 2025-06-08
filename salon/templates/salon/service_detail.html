@@ -1,3 +1,4 @@
+<!-- service_detail.html -->
 {% extends 'salon/base.html' %}
 {% block title %}Услуга{% endblock %}
 
@@ -6,6 +7,16 @@
   <div class="bg-white shadow p-6 rounded-lg space-y-4">
     <h2 class="text-3xl font-bold text-gray-900">{{ service.name }}</h2>
     <p class="text-gray-700 text-base leading-relaxed">{{ service.description }}</p>
+
+    <p class="text-gray-700 mt-3"><strong>Длительность:</strong> {{ service.duration_minutes }} мин.</p>
+
+    {% if service.details %}
+      <div class="mt-4">
+        <h4 class="font-semibold text-gray-900 mb-1">Что входит в услугу:</h4>
+        <p class="text-gray-700 text-sm leading-relaxed">{{ service.details }}</p>
+      </div>
+    {% endif %}
+
     <p class="text-blue-700 font-semibold text-xl">{{ service.price }} KZT</p>
     <img class="group-hover:scale-105 group-focus:scale-105 transition-transform duration-500 ease-in-out object-cover rounded-2xl" src="/media/{{ service.photo }}" alt="Blog Image">
 

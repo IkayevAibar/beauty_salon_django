@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="specialist-detail">
+    <img src="{{ specialist.photo.url }}" alt="{{ specialist.name }}">
+    <h1>{{ specialist.name }}</h1>
+    <p>{{ specialist.description }}</p>
+    <p>Опыт: {{ specialist.experience }} лет</p>
+    <p>Специализация: {{ specialist.specialization }}</p>
+    <!-- Добавь что нужно ещё -->
+</div>
+{% endblock %}

@@ -47,7 +47,13 @@
         </a>
       {% endfor %}
     </div>
-  </div>
+
+    <div class="mt-8 text-center">
+      <a href="{% url 'services_list' %}" class="inline-block px-6 py-3 bg-red-100 hover:bg-lime-600 text-black font-semibold rounded-xl text-sm sm:text-base shadow-md transition">
+        Ещё услуги
+      </a>
+    </div>
+
   {% if user.is_authenticated and schedule %}
     <div class="max-w-7xl mt-10 p-6 bg-white dark:bg-gray-800 shadow-xl rounded-lg mx-auto" id="schedule">
       <h3 class="text-2xl font-bold mb-3 text-gray-800 dark:text-gray-100">График занятости</h3>

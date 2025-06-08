@@ -29,4 +29,7 @@ urlpatterns = [
 
     # Статистика
     path('stats/', views.stats_view, name='stats'),
+
+    # Специалисты
+    path('specialists/<int:pk>/', views.specialist_detail, name='specialist_detail'),
 ]

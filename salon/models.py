@@ -2,6 +2,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.db.models import Avg
 
 class Specialist(models.Model):
     """
@@ -24,6 +25,15 @@ class Specialist(models.Model):
     full_name = models.CharField(max_length=100)
     experience_years = models.PositiveIntegerField()
     bio = models.TextField(blank=True)
+    photo = models.ImageField(upload_to='specialists/', null=True, blank=True)
+
+    @property
+    def average_rating(self):
+        return Rating.objects.filter(booking__service__specialist=self).aggregate(avg=Avg('rating'))['avg']
+    
+    @property
+    def reviews(self):
+        return Rating.objects.filter(booking__service__specialist=self).select_related('booking', 'booking__user')
     
     def __str__(self):
         return self.full_name
@@ -51,6 +61,8 @@ class Service(models.Model):
     price = models.DecimalField(max_digits=8, decimal_places=2)
     specialist = models.ForeignKey(Specialist, on_delete=models.CASCADE, related_name='services')
     photo = models.FileField("Картинка услуги", upload_to="files/", null=True, blank=True)
+    duration_minutes = models.PositiveIntegerField("Длительность (мин)", default=60)
+    details = models.TextField("Что входит в услугу", blank=True)
 
     def __str__(self):
         return self.name

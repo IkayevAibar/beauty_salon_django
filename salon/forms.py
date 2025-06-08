@@ -97,4 +97,13 @@ class RatingForm(forms.ModelForm):
 class ServiceForm(forms.ModelForm):
     class Meta:
         model = Service
-        fields = ["name", "description", "price", "specialist"]
+        fields = ["name", "description", "price", "specialist", "photo", "duration_minutes", "details"]
+    widgets = {
+        'name': forms.TextInput(attrs={'class': 'border border-gray-300 p-2 w-full rounded'}),
+        'description': forms.Textarea(attrs={'class': 'border border-gray-300 p-2 w-full rounded', 'rows': 3}),
+        'price': forms.NumberInput(attrs={'class': 'border border-gray-300 p-2 w-full rounded'}),
+        'specialist': forms.Select(attrs={'class': 'border border-gray-300 p-2 w-full rounded'}),
+        'photo': forms.ClearableFileInput(attrs={'class': 'border border-gray-300 p-2 w-full rounded'}),
+        'duration_minutes': forms.NumberInput(attrs={'class': 'border border-gray-300 p-2 w-full rounded'}),
+        'details': forms.Textarea(attrs={'class': 'border border-gray-300 p-2 w-full rounded', 'rows': 3}),
+    }
